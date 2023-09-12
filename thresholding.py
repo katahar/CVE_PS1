@@ -64,11 +64,11 @@ if(hl_input.lower().strip()== "dark"): #forces input to lowercase and removes wh
 else:
     print("Opening " + input_file + "in bright highlight mode...")
 
-
-cv2.namedWindow("input", cv2.WINDOW_NORMAL)
-cv2.namedWindow("grayscale", cv2.WINDOW_NORMAL)
-cv2.namedWindow("mask", cv2.WINDOW_NORMAL)
-# cv2.namedWindow("input", cv2.WINDOW_NORMAL)
+# creating empty named windows for later population
+cv2.namedWindow("input", cv2.WINDOW_AUTOSIZE )
+cv2.namedWindow("grayscale", cv2.WINDOW_AUTOSIZE )
+cv2.namedWindow("mask", cv2.WINDOW_AUTOSIZE )
+cv2.namedWindow("output", cv2.WINDOW_AUTOSIZE )
 
 # read image
 img = cv2.imread(input_file)
@@ -80,13 +80,27 @@ cv2.imshow("grayscale", gray_image)
 # @TODO: save image
 
 # binary
-bin_thresh = 70
+bin_thresh = 60
 if(dark_cmp):
-    ret,thresh = cv2.threshold(gray_image,bin_thresh,255,cv2.THRESH_BINARY)
-else:
+    bin_thresh = 175
+    print("Using threshold " + str(bin_thresh)) 
     ret,thresh = cv2.threshold(gray_image,bin_thresh,255,cv2.THRESH_BINARY_INV)
+else:
+    bin_thresh = 60
+    ret,thresh = cv2.threshold(gray_image,bin_thresh,255,cv2.THRESH_BINARY)
+
 cv2.imshow("mask", thresh)
 # @TODO: save image
+
+
+# masking
+# mask = np.zeros(img.shape[:2], np.uint8)
+masking_indices = np.where(thresh ==255)
+red_masked = img
+red_masked[masking_indices[0], masking_indices[1], :] = [0,0,255]
+# red_masked[masking_indices[0], masking_indices[1], 2] = 255
+cv2.imshow("output", red_masked)
+
 
 
 
