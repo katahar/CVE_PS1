@@ -74,10 +74,16 @@ cv2.namedWindow("output", cv2.WINDOW_AUTOSIZE )
 img = cv2.imread(input_file)
 cv2.imshow("input", img)
 
+# extracting extension and file base name
+extension = input_file[-4:]
+input_file = input_file[:-4]
+
 # grayscale 
 gray_image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+# displays image
 cv2.imshow("grayscale", gray_image)
-# @TODO: save image
+# saves image with correct extension
+cv2.imwrite(input_file+"_grayscale"+extension, gray_image)
 
 # binary
 bin_thresh = 60
@@ -90,16 +96,21 @@ else:
     ret,thresh = cv2.threshold(gray_image,bin_thresh,255,cv2.THRESH_BINARY)
 
 cv2.imshow("mask", thresh)
-# @TODO: save image
+cv2.imwrite(input_file+"_binary"+extension, thresh)
 
 
 # masking
-# mask = np.zeros(img.shape[:2], np.uint8)
+# determines locations where the mask is white
 masking_indices = np.where(thresh ==255)
 red_masked = img
+# replacing those pixel locations with a red pixel
 red_masked[masking_indices[0], masking_indices[1], :] = [0,0,255]
+
+# this version keeps the R and G value, but maximizes the red channel. 
 # red_masked[masking_indices[0], masking_indices[1], 2] = 255
+
 cv2.imshow("output", red_masked)
+cv2.imwrite(input_file+"_output"+extension, red_masked)
 
 
 
