@@ -32,7 +32,6 @@ Note to self: be sure to run "conda activate cve" before running this file
 
 
 import cv2
-import sys
 import numpy as np
 import os
 
