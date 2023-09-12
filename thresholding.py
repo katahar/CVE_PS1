@@ -26,6 +26,8 @@ emphasize brighter regions or darker regions, display four images (input, graysc
 the screen, and save the grayscale, binary, and output image files in the same directory. Make sure to
 include plenty of comment lines in your Python code.
 
+Note to self: be sure to run "conda activate cve" before running this file
+
 '''
 
 
@@ -56,24 +58,35 @@ input_file = input("\n input file: ")
 # get mode
 dark_cmp = False
 hl_input = input("Got it! Type \"dark\" to highlight dark areas, or \"light\" to highlight brighter areas. ")
-if(hl_input.lower().strip()== "dark"): #forces input to lowercase for easier comparison
+if(hl_input.lower().strip()== "dark"): #forces input to lowercase and removes whitespace for easier comparison
     dark_cmp = True
     print("Opening " + input_file + "in dark highlight mode...")
 else:
     print("Opening " + input_file + "in bright highlight mode...")
 
 
-
-
-
-
 cv2.namedWindow("input", cv2.WINDOW_NORMAL)
+cv2.namedWindow("grayscale", cv2.WINDOW_NORMAL)
+cv2.namedWindow("mask", cv2.WINDOW_NORMAL)
+# cv2.namedWindow("input", cv2.WINDOW_NORMAL)
 
 # read image
 img = cv2.imread(input_file)
 cv2.imshow("input", img)
 
+# grayscale 
+gray_image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+cv2.imshow("grayscale", gray_image)
+# @TODO: save image
 
+# binary
+bin_thresh = 70
+if(dark_cmp):
+    ret,thresh = cv2.threshold(gray_image,bin_thresh,255,cv2.THRESH_BINARY)
+else:
+    ret,thresh = cv2.threshold(gray_image,bin_thresh,255,cv2.THRESH_BINARY_INV)
+cv2.imshow("mask", thresh)
+# @TODO: save image
 
 
 
